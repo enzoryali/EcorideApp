@@ -48,17 +48,15 @@ class Covoiturage
     private ?Voiture $voiture = null;
 
     /**
-     * @var Collection<int, Utilisateur>
+     * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'covoiturages')]
-    private Collection $utilisateurs;
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'covoiturages')]
+    private Collection $users;
 
     public function __construct()
     {
-        $this->utilisateurs = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
-
-
 
     public function getId(): ?int
     {
@@ -186,54 +184,27 @@ class Covoiturage
     }
 
     /**
-     * @return Collection<int, Participe>
+     * @return Collection<int, User>
      */
-    public function getParticipes(): Collection
+    public function getUsers(): Collection
     {
-        return $this->participes;
+        return $this->users;
     }
 
-    public function addParticipe(Participe $participe): static
+    public function addUser(User $user): static
     {
-        if (!$this->participes->contains($participe)) {
-            $this->participes->add($participe);
-            $participe->addCovoiturage($this);
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addCovoiturage($this);
         }
 
         return $this;
     }
 
-    public function removeParticipe(Participe $participe): static
+    public function removeUser(User $user): static
     {
-        if ($this->participes->removeElement($participe)) {
-            $participe->removeCovoiturage($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Utilisateur>
-     */
-    public function getUtilisateurs(): Collection
-    {
-        return $this->utilisateurs;
-    }
-
-    public function addUtilisateur(Utilisateur $utilisateur): static
-    {
-        if (!$this->utilisateurs->contains($utilisateur)) {
-            $this->utilisateurs->add($utilisateur);
-            $utilisateur->addCovoiturage($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUtilisateur(Utilisateur $utilisateur): static
-    {
-        if ($this->utilisateurs->removeElement($utilisateur)) {
-            $utilisateur->removeCovoiturage($this);
+        if ($this->users->removeElement($user)) {
+            $user->removeCovoiturage($this);
         }
 
         return $this;

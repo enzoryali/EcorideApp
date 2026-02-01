@@ -19,16 +19,15 @@ class Role
     private ?string $libelle = null;
 
     /**
-     * @var Collection<int, Utilisateur>
+     * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'roles')]
-    private Collection $utilisateurs;
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'role')]
+    private Collection $users;
 
     public function __construct()
     {
-        $this->utilisateurs = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
-
 
     public function getId(): ?int
     {
@@ -48,54 +47,27 @@ class Role
     }
 
     /**
-     * @return Collection<int, Possede>
+     * @return Collection<int, User>
      */
-    public function getPossedes(): Collection
+    public function getUsers(): Collection
     {
-        return $this->possedes;
+        return $this->users;
     }
 
-    public function addPossede(Possede $possede): static
+    public function addUser(User $user): static
     {
-        if (!$this->possedes->contains($possede)) {
-            $this->possedes->add($possede);
-            $possede->addRole($this);
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addRole($this);
         }
 
         return $this;
     }
 
-    public function removePossede(Possede $possede): static
+    public function removeUser(User $user): static
     {
-        if ($this->possedes->removeElement($possede)) {
-            $possede->removeRole($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Utilisateur>
-     */
-    public function getUtilisateurs(): Collection
-    {
-        return $this->utilisateurs;
-    }
-
-    public function addUtilisateur(Utilisateur $utilisateur): static
-    {
-        if (!$this->utilisateurs->contains($utilisateur)) {
-            $this->utilisateurs->add($utilisateur);
-            $utilisateur->addRole($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUtilisateur(Utilisateur $utilisateur): static
-    {
-        if ($this->utilisateurs->removeElement($utilisateur)) {
-            $utilisateur->removeRole($this);
+        if ($this->users->removeElement($user)) {
+            $user->removeRole($this);
         }
 
         return $this;

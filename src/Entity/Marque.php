@@ -29,10 +29,6 @@ class Marque
         $this->voitures = new ArrayCollection();
     }
 
-   
-
-
-    
     public function getId(): ?int
     {
         return $this->id;
@@ -79,5 +75,4 @@ class Marque
 
         return $this;
     }
-
 }

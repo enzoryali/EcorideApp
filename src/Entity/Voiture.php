@@ -32,11 +32,11 @@ class Voiture
 
     #[ORM\ManyToOne(inversedBy: 'voitures')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Marque $marque = null;
+    private ?User $utilisateur = null;
 
     #[ORM\ManyToOne(inversedBy: 'voitures')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $utilisateur = null;
+    private ?Marque $marque = null;
 
     /**
      * @var Collection<int, Covoiturage>
@@ -49,8 +49,6 @@ class Voiture
         $this->covoiturages = new ArrayCollection();
     }
 
-   
-    
     public function getId(): ?int
     {
         return $this->id;
@@ -116,6 +114,18 @@ class Voiture
         return $this;
     }
 
+    public function getUtilisateur(): ?User
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?User $utilisateur): static
+    {
+        $this->utilisateur = $utilisateur;
+
+        return $this;
+    }
+
     public function getMarque(): ?Marque
     {
         return $this->marque;
@@ -124,18 +134,6 @@ class Voiture
     public function setMarque(?Marque $marque): static
     {
         $this->marque = $marque;
-
-        return $this;
-    }
-
-    public function getUtilisateur(): ?Utilisateur
-    {
-        return $this->utilisateur;
-    }
-
-    public function setUtilisateur(?Utilisateur $utilisateur): static
-    {
-        $this->utilisateur = $utilisateur;
 
         return $this;
     }
@@ -169,9 +167,4 @@ class Voiture
 
         return $this;
     }
-
-   
-
-
-   
 }

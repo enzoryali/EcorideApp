@@ -17,7 +17,7 @@ class Configuration
 
     #[ORM\ManyToOne(inversedBy: 'configurations')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $utilisateur = null;
+    private ?User $utilisateur = null;
 
     /**
      * @var Collection<int, Parametre>
@@ -35,12 +35,12 @@ class Configuration
         return $this->id;
     }
 
-    public function getUtilisateur(): ?Utilisateur
+    public function getUtilisateur(): ?User
     {
         return $this->utilisateur;
     }
 
-    public function setUtilisateur(?Utilisateur $utilisateur): static
+    public function setUtilisateur(?User $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
 
