@@ -30,9 +30,7 @@ class Voiture
     #[ORM\Column(length: 50)]
     private ?string $date_premiere_immatriculation = null;
 
-    #[ORM\ManyToOne(inversedBy: 'voitures')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $utilisateur = null;
+
 
     #[ORM\ManyToOne(inversedBy: 'voitures')]
     #[ORM\JoinColumn(nullable: false)]
@@ -43,6 +41,23 @@ class Voiture
      */
     #[ORM\OneToMany(targetEntity: Covoiturage::class, mappedBy: 'voiture')]
     private Collection $covoiturages;
+
+    #[ORM\ManyToOne(inversedBy: 'voitures')]
+    private ?User $user = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $fumeur = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $animaux = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $preferences_libres = null;
+
+    #[ORM\Column]
+    private ?int $nbPlaces = null;
+
+
 
     public function __construct()
     {
@@ -114,18 +129,6 @@ class Voiture
         return $this;
     }
 
-    public function getUtilisateur(): ?User
-    {
-        return $this->utilisateur;
-    }
-
-    public function setUtilisateur(?User $utilisateur): static
-    {
-        $this->utilisateur = $utilisateur;
-
-        return $this;
-    }
-
     public function getMarque(): ?Marque
     {
         return $this->marque;
@@ -167,4 +170,65 @@ class Voiture
 
         return $this;
     }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function isFumeur(): ?bool
+    {
+        return $this->fumeur;
+    }
+
+    public function setFumeur(?bool $fumeur): static
+    {
+        $this->fumeur = $fumeur;
+
+        return $this;
+    }
+
+    public function isAnimaux(): ?bool
+    {
+        return $this->animaux;
+    }
+
+    public function setAnimaux(?bool $animaux): static
+    {
+        $this->animaux = $animaux;
+
+        return $this;
+    }
+
+    public function getPreferencesLibres(): ?string
+    {
+        return $this->preferences_libres;
+    }
+
+    public function setPreferencesLibres(?string $preferences_libres): static
+    {
+        $this->preferences_libres = $preferences_libres;
+
+        return $this;
+    }
+
+    public function getNbPlaces(): ?int
+    {
+        return $this->nbPlaces;
+    }
+
+    public function setNbPlaces(int $nbPlaces): static
+    {
+        $this->nbPlaces = $nbPlaces;
+
+        return $this;
+    }
+
 }

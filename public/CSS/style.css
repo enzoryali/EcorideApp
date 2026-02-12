@@ -1,0 +1,115 @@
+.navbar-logo {
+    height: 65px; 
+    width: 110px; 
+    position: absolute; 
+    top: -14px;
+    z-index: 1000;
+    
+}
+.hero-section {
+    height: 350px;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), 
+                url('../images/background.jpeg') no-repeat center center; 
+    background-size: cover; 
+    width: 100vw;
+    position: relative;
+    margin-left: calc(-50vw + 50%);
+    margin-top: 0 !important;
+    display: flex;
+    align-items: flex-start; 
+    padding-top: 110px;     
+
+}
+
+.search-bar-container {
+    margin-top: -50px;
+    position: relative; 
+    z-index: 10;
+}
+
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 3px solid #fff; 
+    border-radius: 50%;     
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075); 
+}
+
+/* Conteneur de l'alerte crédit */
+.credit-badge {
+    background-color: #d1ecf1; /* Équivalent à alert-info */
+    color: #0c5460;
+    padding-top: 0.5rem;    /* Équivalent à py-2 */
+    padding-bottom: 0.5rem;
+    border: 0 !important;   /* Équivalent à border-0 */
+    border-radius: 0.5rem;
+}
+
+/* Le petit texte "CRÉDITS" */
+.credit-label {
+    display: block;         /* Équivalent à d-block */
+    text-transform: uppercase; /* Équivalent à text-uppercase */
+    font-weight: bold;      /* Équivalent à fw-bold */
+    font-size: 0.7rem;      /* Ton style personnalisé */
+    letter-spacing: 0.5px;
+}
+
+.section-label-small {
+    display: block;
+    font-weight: bold;         /* fw-bold */
+    color: #6c757d;            /* text-muted */
+    text-transform: uppercase; /* text-uppercase */
+    font-size: 0.7rem;         /* Ton style personnalisé */
+    letter-spacing: 0.5px;     /* Petit bonus pour la lisibilité en majuscules */
+}
+
+.note-badge {
+    background-color: #ffc107; /* Équivalent bg-warning */
+    color: #212529;            /* Équivalent text-dark */
+    font-size: 0.75rem;        /* Légèrement ajusté pour la lisibilité */
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;                  /* Espace entre le chiffre et l'étoile */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* La carte de trajet */
+.trajet-card {
+    border: 1px solid #198754 !important; /* border-success */
+    border-radius: 1rem;
+    transition: transform 0.2s ease-in-out;
+}
+
+.trajet-card:hover {
+    transform: translateY(-3px); /* Petit effet au survol */
+}
+
+/* L'avatar du chauffeur dans la liste */
+.driver-thumb {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 50%; /* rounded-circle */
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075); /* shadow-sm */
+    margin-bottom: 0.5rem; /* mb-2 */
+}
+
+.admin-total-badge {
+    background-color: #212529;
+    color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+}
+
+.admin-total-badge small {
+    display: block;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}
+

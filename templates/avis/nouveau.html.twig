@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Laisser un avis - EcoRide{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                {# En-tête avec rappel du trajet #}
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h3 class="mb-0">Votre avis sur le trajet</h3>
+                    <p class="mb-0 opacity-75">
+                        <i class="bi bi-geo-alt-fill"></i> {{ covoiturage.lieuDepart }} 
+                        <i class="bi bi-arrow-right"></i> {{ covoiturage.lieuArrivee }}
+                    </p>
+                </div>
+
+                <div class="card-body p-4">
+                    {# Message d'explication #}
+                    <p class="text-muted text-center mb-4">
+                        Comment s'est passé votre voyage ? Votre retour aide les autres membres d'EcoRide.
+                    </p>
+
+                    {{ form_start(form) }}
+                        {# Champ Note (1 à 5) #}
+                        <div class="mb-4">
+                            {{ form_label(form.note, "Note globale (sur 5)", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-star-fill text-warning"></i></span>
+                                {{ form_widget(form.note, {
+                                    'attr': {
+                                        'class': 'form-control', 
+                                        'min': 1, 
+                                        'max': 5,
+                                        'placeholder': 'Note de 1 à 5'
+                                    }
+                                }) }}
+                            </div>
+                            <div class="text-danger small">{{ form_errors(form.note) }}</div>
+                        </div>
+
+                        {# Champ Commentaire #}
+                        <div class="mb-4">
+                            {{ form_label(form.commentaire, "Votre expérience", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(form.commentaire, {
+                                'attr': {
+                                    'class': 'form-control', 
+                                    'rows': '5',
+                                    'placeholder': 'Racontez-nous brièvement le voyage...'
+                                }
+                            }) }}
+                            <div class="text-danger small">{{ form_errors(form.commentaire) }}</div>
+                        </div>
+
+                        {# Boutons #}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle me-2"></i>Envoyer mon avis
+                            </button>
+                            <a href="{{ path('app_covoiturage_show', {id: covoiturage.id}) }}" class="btn btn-light text-muted border">
+                                Annuler
+                            </a>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+
+                <div class="card-footer bg-light text-center py-3">
+                    <small class="text-muted">
+                        <i class="bi bi-shield-check me-1"></i> 
+                        Par souci de sécurité, votre avis sera vérifié par notre modérateur avant d'être publié.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

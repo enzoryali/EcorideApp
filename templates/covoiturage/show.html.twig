@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du trajet - EcoRide{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        {# Colonne Gauche : Infos Trajet #}
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="text-success mb-4 border-bottom pb-2">
+                        {{ covoiturage.lieuDepart }} → {{ covoiturage.lieuArrivee }}
+                    </h2>
+                    
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <p class="mb-1 text-muted">DÉPART</p>
+                            <p class="h5"><strong>{{ covoiturage.dateDepart|date('d/m/Y') }}</strong></p>
+                            <p class="h5 text-success fw-bold">{{ covoiturage.heureDepart|date('H:i') }}</p>
+                        </div>
+                        <div class="col-6 text-end">
+                            <p class="mb-1 text-muted">PRIX</p>
+                            <p class="h3 text-success"><strong>{{ covoiturage.prixPersonne }} Crédits</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <strong>Véhicule :</strong> {{ covoiturage.voiture.marque.libelle }} {{ covoiturage.voiture.modele }} <br>
+                        <strong>Énergie :</strong> {{ covoiturage.voiture.energie }}
+                    </div>
+                </div>
+            </div>
+        </div>
+{# Colonne Droite : Action & Places #}
+        <div class="col-md-4">
+            <div class="card shadow-sm border-success">
+                <div class="card-body text-center">
+                    <p class="h4 mb-3">{{ covoiturage.nbPlace }} places disponibles</p>
+                    
+                    {% if app.user %}
+    {# Bouton déclencheur de la modale #}
+    <button type="button" class="btn btn-success btn-lg w-100 mb-2" data-bs-toggle="modal" data-bs-target="#confirmReservationModal">
+        Participer
+    </button>
+
+    <a href="{{ path('app_avis_new', {id: covoiturage.id}) }}" class="btn btn-primary w-100">
+        Donner mon avis sur ce trajet
+    </a>
+{% else %}
+    <a href="{{ path('app_login') }}" class="btn btn-outline-secondary w-100">Connectez-vous pour réserver</a>
+{% endif %}
+{# La Modale de Confirmation #}
+<div class="modal fade" id="confirmReservationModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirmer votre participation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Souhaitez-vous confirmer votre réservation pour ce trajet ?</p>
+                <div class="alert alert-warning">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>Coût du trajet :</strong> {{ covoiturage.prixPersonne }} crédits.
+                </div>
+                <p class="small text-muted">Votre solde actuel : {{ app.user.credit }} €</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                {# C'est ICI que l'on met le lien vers ton controller #}
+                <a href="{{ path('app_covoiturage_reserve', {'id': covoiturage.id}) }}" class="btn btn-success px-4">
+                    Confirmer et utiliser mes crédits
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+                    
+                    <a href="{{ path('app_covoiturage_index') }}" class="btn btn-link mt-3 text-muted">Retour à la liste</a>
+                </div>
+            </div>
+        </div>
+
+        {# --- SECTION PRÉFÉRENCES DANS VOITURE --- #}
+<div class="mt-4">
+    <h4 class="h5 border-bottom pb-2">Préférences</h4>
+    <div class="row mt-3">
+        {# Préférence Fumeur #}
+        <div class="col-6 col-md-4">
+            <div class="d-flex align-items-center mb-3">
+                {% if covoiturage.voiture.fumeur %}
+                    <i class="bi bi-check-circle-fill text-success me-2 fs-4"></i>
+                    <span>Fumeurs autorisés</span>
+                {% else %}
+                    <i class="bi bi-x-circle-fill text-danger me-2 fs-4"></i>
+                    <span>pas de fumeurs</span>
+                {% endif %}
+            </div>
+        </div>
+        
+
+        {# Préférence Animaux #}
+        <div class="col-6 col-md-4">
+            <div class="d-flex align-items-center mb-3">
+                {% if covoiturage.voiture.animaux %}
+                    <i class="bi bi-check-circle-fill text-success me-2 fs-4"></i>
+                    <span>Animaux autorisés</span>
+                {% else %}
+                    <i class="bi bi-x-circle-fill text-danger me-2 fs-4"></i>
+                    <span>Pas d'animaux</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+                    {# --- AVIS DU CONDUCTEUR --- #}
+                    <div class="mt-5">
+                        <h4 class="h5 border-bottom pb-2">Derniers avis sur {{ covoiturage.voiture.user.pseudo }}</h4>
+                        {% for avis in covoiturage.voiture.user.avis %}
+                            <div class="mb-3 p-3 bg-light rounded shadow-sm">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold text-warning">
+                                        {% for i in 1..5 %}
+                                            <i class="bi bi-star{{ i <= avis.note ? '-fill' : '' }}"></i>
+                                        {% endfor %}
+                                    </span>
+                                    
+                                </div>
+                                <p class="mb-0 mt-2 italic">"{{ avis.commentaire }}"</p>
+                            </div>
+                        {% else %}
+                            <p class="text-muted small">Aucun avis n'a été laissé pour ce conducteur.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+{% endblock %}

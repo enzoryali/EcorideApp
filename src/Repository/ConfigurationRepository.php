@@ -40,4 +40,6 @@ class ConfigurationRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    
 }

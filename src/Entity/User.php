@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -42,63 +41,63 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50)]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 20)]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 50)]
     private ?string $adresse = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $date_naissance = null;
-
-    #[ORM\Column(type: Types::BLOB)]
-    private mixed $phooto = null;
+    private ?string $date_de_naissance = null;
 
     #[ORM\Column(length: 50)]
     private ?string $pseudo = null;
 
     #[ORM\Column]
-    private ?int $credit = 20;
+    private ?int $credit = null;
 
     /**
      * @var Collection<int, Voiture>
      */
-    #[ORM\OneToMany(targetEntity: Voiture::class, mappedBy: 'utilisateur')]
+    #[ORM\OneToMany(targetEntity: Voiture::class, mappedBy: 'user')]
     private Collection $voitures;
 
     /**
      * @var Collection<int, Configuration>
      */
-    #[ORM\OneToMany(targetEntity: Configuration::class, mappedBy: 'utilisateur')]
+    #[ORM\OneToMany(targetEntity: Configuration::class, mappedBy: 'user')]
     private Collection $configurations;
 
     /**
      * @var Collection<int, Covoiturage>
      */
-    #[ORM\ManyToMany(targetEntity: Covoiturage::class, inversedBy: 'users')]
+    #[ORM\ManyToMany(targetEntity: Covoiturage::class, inversedBy: 'user')]
     private Collection $covoiturages;
 
-    /**
-     * @var Collection<int, Role>
-     */
-    #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
-    private Collection $role;
+   
 
     /**
      * @var Collection<int, Avis>
      */
-    #[ORM\ManyToMany(targetEntity: Avis::class, inversedBy: 'users')]
+    #[ORM\ManyToMany(targetEntity: Avis::class, inversedBy: 'user')]
     private Collection $avis;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photo = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $isSuspended = null;
 
     public function __construct()
     {
         $this->voitures = new ArrayCollection();
         $this->configurations = new ArrayCollection();
         $this->covoiturages = new ArrayCollection();
-        $this->role = new ArrayCollection();
         $this->avis = new ArrayCollection();
-    } //default credit=20
+    }
 
+    
+   
     public function getId(): ?int
     {
         return $this->id;
@@ -222,26 +221,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getDateNaissance(): ?string
+    public function getDateDeNaissance(): ?string
     {
-        return $this->date_naissance;
+        return $this->date_de_naissance;
     }
 
-    public function setDateNaissance(string $date_naissance): static
+    public function setDateDeNaissance(string $date_de_naissance): static
     {
-        $this->date_naissance = $date_naissance;
-
-        return $this;
-    }
-
-    public function getPhooto(): mixed
-    {
-        return $this->phooto;
-    }
-
-    public function setPhooto(mixed $phooto): static
-    {
-        $this->phooto = $phooto;
+        $this->date_de_naissance = $date_de_naissance;
 
         return $this;
     }
@@ -282,7 +269,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->voitures->contains($voiture)) {
             $this->voitures->add($voiture);
-            $voiture->setUtilisateur($this);
+            $voiture->setUser($this);
         }
 
         return $this;
@@ -292,8 +279,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->voitures->removeElement($voiture)) {
             // set the owning side to null (unless already changed)
-            if ($voiture->getUtilisateur() === $this) {
-                $voiture->setUtilisateur(null);
+            if ($voiture->getUser() === $this) {
+                $voiture->setUser(null);
             }
         }
 
@@ -312,7 +299,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->configurations->contains($configuration)) {
             $this->configurations->add($configuration);
-            $configuration->setUtilisateur($this);
+            $configuration->setUser($this);
         }
 
         return $this;
@@ -322,8 +309,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->configurations->removeElement($configuration)) {
             // set the owning side to null (unless already changed)
-            if ($configuration->getUtilisateur() === $this) {
-                $configuration->setUtilisateur(null);
+            if ($configuration->getUser() === $this) {
+                $configuration->setUser(null);
             }
         }
 
@@ -342,6 +329,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->covoiturages->contains($covoiturage)) {
             $this->covoiturages->add($covoiturage);
+            $covoiturage->addUser($this);
         }
 
         return $this;
@@ -349,35 +337,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeCovoiturage(Covoiturage $covoiturage): static
     {
-        $this->covoiturages->removeElement($covoiturage);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Role>
-     */
-    public function getRole(): Collection
-    {
-        return $this->role;
-    }
-
-    public function addRole(Role $role): static
-    {
-        if (!$this->role->contains($role)) {
-            $this->role->add($role);
+        if ($this->covoiturages->removeElement($covoiturage)) {
+            $covoiturage->removeUser($this);
         }
 
         return $this;
     }
 
-    public function removeRole(Role $role): static
-    {
-        $this->role->removeElement($role);
-
-        return $this;
-    }
-
+   
     /**
      * @return Collection<int, Avis>
      */
@@ -401,4 +368,58 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): static
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+    //calcul note moyenne pour l'afficher sur covoiturage/index.html.twig
+
+    public function getNoteMoyenne(): float
+    {
+    $avisRecus = $this->getAvis(); 
+
+    if ($avisRecus->isEmpty()) {
+        return 0.0;
+    }
+
+    $total = 0;
+    $count = 0;
+
+    foreach ($avisRecus as $avi) {
+        // On ne prend que les avis validés
+        if ($avi->getStatut() === 'validé') {
+            // (int) convertit ta chaîne "5" en nombre 5 pour le calcul
+            $total += (int)$avi->getNote();
+            $count++;
+        }
+    }
+
+    if ($count === 0) return 0.0;
+
+    return round($total / $count, 1);
+}
+
+    public function isSuspended(): ?bool
+    {
+        return $this->isSuspended;
+    }
+
+    public function setIsSuspended(?bool $isSuspended): static
+    {
+        $this->isSuspended = $isSuspended;
+
+        return $this;
+    }
+
+
+
 }

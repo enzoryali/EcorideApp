@@ -1,19 +1,69 @@
 {% extends 'base.html.twig' %}
+{% block title%}Register{% endblock %}
 
-{% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+   <div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        {# On utilise col-md-8 car il y a beaucoup de champs, c'est plus confortable #}
+        <div class="col-md-10 col-lg-7">
+            <div class="card shadow-sm p-4 border-0 rounded-3">
+                
+                <h1 class="h3 mb-4 fw-bold text-center">Créer un compte</h1>
 
-    {{ form_errors(registrationForm) }}
+                {{ form_start(registrationForm) }}
+                    <div class="row g-3">
+                        {# On met le Nom et Prénom sur la même ligne #}
+                        <div class="col-md-6">
+                            {{ form_row(registrationForm.nom, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(registrationForm.prenom, {'attr': {'class': 'form-control'}}) }}
+                        </div>
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+                        <div class="col-md-6">
+                            {{ form_row(registrationForm.pseudo, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(registrationForm.telephone, {'attr': {'class': 'form-control'}}) }}
+                        </div>
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+                        <div class="col-12">
+                            {{ form_row(registrationForm.adresse, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="col-md-6">
+                            {{ form_row(registrationForm.date_de_naissance, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="col-12">
+                            {{ form_row(registrationForm.Password, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="col-12 mt-3">
+                            <div class="form-check">
+                                {{ form_widget(registrationForm.agreeTerms) }}
+                                {{ form_label(registrationForm.agreeTerms, 'J\'accepte les conditions d\'utilisation', {'label_attr': {'class': 'form-check-label'}}) }}
+                            </div>
+                        </div>
+
+                        <div class="col-12 d-grid mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-person-plus-fill me-2"></i>Enregistrer
+                            </button>
+                        </div>
+                    </div>
+                {{ form_end(registrationForm) }}
+
+                <div class="text-center mt-3">
+                    <p class="text-muted small">Vous avez déjà un compte ? <a href="{{ path('app_login') }}" class="text-success text-decoration-none fw-bold">Connectez-vous</a></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

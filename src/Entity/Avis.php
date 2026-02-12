@@ -30,9 +30,11 @@ class Avis
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'avis')]
     private Collection $users;
 
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+       
     }
 
     public function getId(): ?int
@@ -102,4 +104,5 @@ class Avis
 
         return $this;
     }
+
 }

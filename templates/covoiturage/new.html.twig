@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{% block title %}EcoRide - Publier un trajet{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-success text-white py-3">
+            <h2 class="h5 mb-0">Proposer un nouveau trajet</h2>
+        </div>
+        <div class="card-body p-4">
+            {{ form_start(form) }}
+                <div class="row g-3">
+                    {# Section Départ #}
+                    <div class="col-md-6 border-end">
+                        <h6 class="text-success mb-3">DÉPART</h6>
+                        {{ form_row(form.lieu_depart) }}
+                        <div class="row">
+                            <div class="col-6">{{ form_row(form.date_depart) }}</div>
+                            <div class="col-6">{{ form_row(form.heure_depart) }}</div>
+                        </div>
+                    </div>
+
+                    {# Section Arrivée #}
+                    <div class="col-md-6">
+                        <h6 class="text-success mb-3">ARRIVÉE</h6>
+                        {{ form_row(form.lieu_arrivee) }}
+                        <div class="row">
+                            <div class="col-6">{{ form_row(form.date_arrivee) }}</div>
+                            <div class="col-6">{{ form_row(form.heure_arrivee) }}</div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    {# Section Véhicule et Détails #}
+                    <h6 class="text-success mb-3">VÉHICULE ET PRIX</h6>
+                    <div class="col-md-6">
+                        {{ form_row(form.voiture) }}
+                        {# US 9 : Lien pour proposer un nouveau véhicule #}
+                        <div class="mt-1">
+                            <a href="{{ path('app_voiture_new') }}" class="small text-decoration-none">
+                                <i class="bi bi-plus-circle"></i> Ajouter un nouveau véhicule
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        {{ form_row(form.prix_personne) }}
+                    </div>
+                    
+                    <div class="col-12 mt-2">
+                        {# Info Places #}
+                        <div class="alert alert-info py-2 shadow-sm border-0 mb-2">
+                            <small><i class="bi bi-info-circle me-2"></i>Le nombre de places sera automatiquement ajusté selon la capacité du véhicule choisi.</small>
+                        </div>
+                        
+                        {# US 9 : Info Commission 2 crédits #}
+                        <div class="alert alert-warning py-2 shadow-sm border-0">
+                            <small><i class="bi bi-exclamation-triangle me-2"></i><strong>Frais de plateforme :</strong> 2€ seront déduits de votre solde lors de la publication.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm">
+                        <i class="bi bi-megaphone me-2"></i>Publier l'annonce
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

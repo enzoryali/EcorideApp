@@ -1,20 +1,80 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
-
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{# 1. SECTION HERO (L'image de fond) #}
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/EcorideApp/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>C:/EcorideApp/templates/home/index.html.twig</code></li>
-    </ul>
+    
+    <div class="hero-section text-white text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold text-white">Covoiturez pour la planète</h1>
+        <p class="lead mb-4">Simple, écologique et économique.</p>
+    </div>
 </div>
+
+{# 2. BARRE DE RECHERCHE (Remontée plus haut) #}
+<div class="container search-bar-container">
+    <div class="card shadow-lg p-4 border-0 rounded-4">
+                
+                {{ form_start(searchForm, {'action': path('app_covoiturage_index'), 'method': 'GET'}) }}
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            {{ form_widget(searchForm.depart)}}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_widget(searchForm.arrivee)}}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form_widget(searchForm.date) }}
+                        </div>
+                        <div class="col-md-1">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {# BOUTON POUR DÉPLIER LES FILTRES #}
+    <div class="text-start mt-3">
+        <button class="btn btn-link text-success p-0 text-decoration-none" type="button" data-bs-toggle="collapse" data-bs-target="#extraFilters">
+            <i class="bi bi-plus-circle"></i> Plus de filtres
+        </button>
+    </div>
+
+    {# SECTION CACHÉE #}
+    <div class="collapse mt-3" id="extraFilters">
+        <div class="row g-3 border-top pt-3">
+            <div class="col-md-4">
+                {{ form_row(searchForm.prixMax) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(searchForm.dureeMax) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(searchForm.noteMin) }}
+            </div>
+            <div class="col-12 text-center mt-2">
+                {{ form_widget(searchForm.estEcologique) }}
+                {{ form_label(searchForm.estEcologique) }}
+            </div>
+        </div>
+    </div>
+{{ form_end(searchForm, {'render_rest': false}) }}
+            </div>
+        </div>
+    </section>
+
+    {# 2. PRÉSENTATION DE L'ENTREPRISE #}
+    <section class="container my-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <h2 class="fw-bold h1">EcoRide : L'avenir du transport</h2>
+                <p class="fs-5 text-muted">EcoRide est une entreprise engagée dans la réduction des émissions de CO2. Nous favorisons le partage de trajets, notamment pour les véhicules électriques.</p>
+                <div class="d-flex gap-3 mt-4">
+                    <div class="text-success"><i class="bi bi-check-circle-fill"></i> Écologique</div>
+                    <div class="text-success"><i class="bi bi-check-circle-fill"></i> Prix fixes</div>
+                    <div class="text-success"><i class="bi bi-check-circle-fill"></i> Communauté vérifiée</div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
 {% endblock %}

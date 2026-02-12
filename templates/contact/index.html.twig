@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact - EcoRide{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0">
+                <div class="card-body p-5 text-center">
+                {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                {{ message }}
+                </div>
+                {% endfor %}
+                    <h1 class="text-success mb-4">Contactez-nous</h1>
+                    <p class="lead mb-5">Une question ? Notre équipe vous répond dans les plus brefs délais.</p>
+                    
+                    <div class="mb-4">
+                        <i class="bi bi-envelope-fill text-success fs-1"></i>
+                        <h4 class="mt-2">E-mail</h4>
+                        {# Le mail #}
+                        <a href="mailto:contact@ecoride.fr" class="fs-5 text-decoration-none text-dark">contact@ecoride.fr</a>
+                    </div>
+
+                    <hr class="my-5">
+
+                    {# formulaire#}
+                    <form action="{{path('app_contact_send')}}" class="text-start" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Votre nom</label>
+                            <input type="text" name="nom" class="form-control" placeholder="Ex: Jean Dupont" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Votre Email</label>
+                            <input type="email" name="email" class="form-control" placeholder="nom@email.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Message</label>
+                            <textarea name="message" class="form-control" rows="4" placeholder="Votre question..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Envoyer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

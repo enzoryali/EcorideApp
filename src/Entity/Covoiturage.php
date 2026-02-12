@@ -19,19 +19,19 @@ class Covoiturage
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $date_depart = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTime $heure_depart = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 255)]
     private ?string $lieu_depart = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $date_arrivee = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTime $heure_arrivee = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 255)]
     private ?string $lieu_arrivee = null;
 
     #[ORM\Column(length: 50)]
@@ -53,9 +53,14 @@ class Covoiturage
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'covoiturages')]
     private Collection $users;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $duree = null;
+
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+    
     }
 
     public function getId(): ?int
@@ -206,6 +211,20 @@ class Covoiturage
         if ($this->users->removeElement($user)) {
             $user->removeCovoiturage($this);
         }
+
+        return $this;
+    }
+
+ 
+
+    public function getDuree(): ?int
+    {
+        return $this->duree;
+    }
+
+    public function setDuree(?int $duree): static
+    {
+        $this->duree = $duree;
 
         return $this;
     }

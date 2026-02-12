@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{% block title %}{{ editMode ? 'Modifier mon véhicule' : 'Ajouter un véhicule' }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            
+            {# Fil d'ariane pour revenir facilement au profil #}
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_user') }}">Mon Profil</a></li>
+                    <li class="breadcrumb-item active">{{ editMode ? 'Modification' : 'Ajout de véhicule' }}</li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="bi bi-car-front me-2"></i>
+                        {{ editMode ? 'Modifier les informations du véhicule' : 'Enregistrer un nouveau véhicule' }}
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    
+                    {{ form_start(form) }}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {{ form_row(form.marque) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.modele) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.immatriculation) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.energie) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.couleur) }}
+                            </div>
+                            <div class="col-md-6">
+                                {# US 8 : Capacité #}
+                                {{ form_row(form.nbPlaces, {
+                                    'label': 'Nombre de places (Capacité)',
+                                    'attr': {'min': 1, 'max': 9}
+                                }) }}
+                            </div>
+                            <div class="col-12">
+                                {{ form_row(form.date_premiere_immatriculation) }}
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h5 class="fw-bold mb-3"><i class="bi bi-sliders me-2"></i>Préférences à bord</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {{ form_row(form.fumeur) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(form.animaux) }}
+                            </div>
+                            <div class="col-12">
+                                {{ form_row(form.preferences_libres) }}
+                            </div>
+                        </div>
+
+                        <div class="mt-4 d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ path('app_user') }}" class="btn btn-light px-4">Annuler</a>
+                            <button type="submit" class="btn btn-success px-5 fw-bold shadow-sm">
+                                <i class="bi bi-check-lg me-1"></i> 
+                                {{ editMode ? 'Mettre à jour' : 'Enregistrer le véhicule' }}
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="text-muted small">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Ces informations seront visibles par les passagers lors de vos trajets.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
