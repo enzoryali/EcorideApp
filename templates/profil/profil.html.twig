@@ -54,15 +54,34 @@
                 <div class="list-group list-group-flush">
                     {% for v in mesVoitures %}
                         <div class="list-group-item d-flex justify-content-between align-items-center p-3">
-                            <div>
-                                <span class="fw-bold text-dark">{{ v.marque.libelle }} {{ v.modele }}</span>
-                                <span class="badge bg-info text-dark ms-2">{{ v.nbPlaces }} places</span>
-                                <div class="small text-muted">{{ v.immatriculation }} • {{ v.energie }}</div>
-                            </div>
-                            <a href="{{ path('app_voiture_edit', {'id': v.id}) }}" class="btn btn-light btn-sm shadow-sm">
-                                <i class="bi bi-pencil text-primary"></i>
-                            </a>
-                        </div>
+    {# Partie Gauche : Infos voiture #}
+    <div class="flex-grow-1">
+        <span class="fw-bold text-dark">{{ v.marque.libelle }} {{ v.modele }}</span>
+        <span class="badge bg-info text-dark ms-2">{{ v.nbPlaces }} places</span>
+        <div class="small text-muted">{{ v.immatriculation }} • {{ v.energie }}</div>
+    </div>
+
+    {# Partie Droite : Actions (Boutons) #}
+    <div class="d-flex align-items-center"> 
+        {# Bouton Modifier #}
+        <a href="{{ path('app_voiture_edit', {'id': v.id}) }}" class="btn btn-light btn-sm shadow-sm me-2">
+            <i class="bi bi-pencil text-primary"></i>
+        </a>
+
+        {# Formulaire de Suppression #}
+        <form method="post" action="{{ path('app_voiture_delete', {'id': v.id}) }}" 
+              onsubmit="return confirm('Voulez-vous vraiment supprimer ce véhicule ?');"
+              class="d-inline m-0 p-0"> {# On force le d-inline et on vire les marges #}
+            
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ v.id) }}">
+            
+            <button type="submit" class="btn btn-light btn-sm shadow-sm">
+                <i class="bi bi-trash text-danger"></i>
+            </button>
+        </form>
+    </div>
+</div>
+                        
                     {% else %}
                         <div class="p-4 text-center text-muted small">Aucun véhicule enregistré.</div>
                     {% endfor %}
@@ -78,7 +97,7 @@
                     <div class="list-group list-group-flush">
                         {% set aDesActivites = false %}
 
-                        {# 1. CONDUCTEUR #}
+                        {# CONDUCTEUR #}
                         {% for voiture in user.voitures %}
                             {% for trajet in voiture.covoiturages|reverse %}
                                 {% set aDesActivites = true %}
@@ -94,45 +113,42 @@
                                         </div>
                                     </div>
 
-                                   {# AFFICHAGE DES AVIS REÇUS POUR CE TRAJET #}
-{% if trajet.statut in ['Terminé', 'Clôturé'] %}
-    <div class="border-top-light">
-    <small class="section-label-small">Avis reçus</small>
+                                {# AFFICHAGE DES AVIS REÇUS POUR CE TRAJET #}
+                                {% if trajet.statut in ['Terminé', 'Clôturé'] %}
+                                        <div class="border-top-light">
+                                            <small class="section-label-small">Avis reçus</small>
 
-        {% set avisAffiche = false %}
+                                    {% set avisAffiche = false %}
 
-        {# On parcourt les avis liés directement à l'utilisateur connecté (le chauffeur) #}
-        {% for avi in user.avis %}
-            {# 
-               Puisque nous n'avons pas de lien direct Avis <-> Trajet, 
-               on affiche les avis validés. 
-               Note : Sans lien Trajet, cela affichera tous vos avis validés 
-               sous chaque trajet terminé. 
-            #}
-            {% if avi.statut == 'validé' %}
-                {% set avisAffiche = true %}
-                <div class="bg-light p-2 rounded mt-2 shadow-sm border-start border-3 border-warning">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <span class="note-badge">
-    {{ avi.note }}/5 <span class="star-icon">★</span>
-</span>
-                        <small class="text-muted">Avis publié</small>
-                    </div>
-                    <p class="small mb-0 fst-italic text-dark">"{{ avi.commentaire }}"</p>
-                </div>
-            {% endif %}
-        {% endfor %}
-
-        {% if not avisAffiche %}
-            <p class="text-muted small mb-0 mt-1 fst-italic">Aucun avis reçu pour le moment.</p>
-        {% endif %}
-    </div>
-{% endif %}
+                                    {# On parcourt les avis liés directement à l'utilisateur connecté (le chauffeur) #}
+                                    {% for avi in user.avis %}
+                                    {# 
+                                    Puisque il n'y a pas de lien direct Avis <-> Trajet, 
+                                    on affiche les avis validés. 
+                                    #}
+                                    {% if avi.statut == 'validé' %}
+                                    {% set avisAffiche = true %}
+                                    <div class="bg-light p-2 rounded mt-2 shadow-sm border-start border-3 border-warning">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="note-badge">
+                                         {{ avi.note }}/5 <span class="star-icon">★</span>
+                                        </span>
+                                        <small class="text-muted">Avis publié</small>
+                                    </div>
+                                    <p class="small mb-0 fst-italic text-dark">"{{ avi.commentaire }}"</p>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% if not avisAffiche %}
+                                        <p class="text-muted small mb-0 mt-1 fst-italic">Aucun avis reçu pour le moment.</p>
+                                    {% endif %}
+                                    </div>
+                                {% endif %}
                                 </div>
                             {% endfor %}
                         {% endfor %}
 
-                        {# 2. PASSAGER #}
+                        {# PASSAGER #}
                         {% for trajet in user.covoiturages|reverse %}
                             {% set aDesActivites = true %}
                             <div class="list-group-item p-3 border-start border-4 border-info mb-2">
@@ -163,7 +179,7 @@
                     </div>
                 </div>
             </div>
-        </div> {# FIN CONTENU DROIT #}
+        </div> 
     </div>
 </div>
 {% endblock %}

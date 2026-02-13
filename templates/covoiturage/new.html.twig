@@ -38,12 +38,12 @@
                     <h6 class="text-success mb-3">VÉHICULE ET PRIX</h6>
                     <div class="col-md-6">
                         {{ form_row(form.voiture) }}
-                        {# US 9 : Lien pour proposer un nouveau véhicule #}
-                        <div class="mt-1">
-                            <a href="{{ path('app_voiture_new') }}" class="small text-decoration-none">
-                                <i class="bi bi-plus-circle"></i> Ajouter un nouveau véhicule
-                            </a>
-                        </div>
+                    {# Lien pour proposer un nouveau véhicule #}
+                    <div class="mt-1">
+                        <a href="{{ path('app_voiture_new') }}" class="small text-decoration-none">
+                            <i class="bi bi-plus-circle"></i> Ajouter un nouveau véhicule
+                        </a>
+                    </div>
                     </div>
                     
                     <div class="col-md-6">
@@ -56,7 +56,7 @@
                             <small><i class="bi bi-info-circle me-2"></i>Le nombre de places sera automatiquement ajusté selon la capacité du véhicule choisi.</small>
                         </div>
                         
-                        {# US 9 : Info Commission 2 crédits #}
+                        {# Info Commission 2 crédits #}
                         <div class="alert alert-warning py-2 shadow-sm border-0">
                             <small><i class="bi bi-exclamation-triangle me-2"></i><strong>Frais de plateforme :</strong> 2€ seront déduits de votre solde lors de la publication.</small>
                         </div>

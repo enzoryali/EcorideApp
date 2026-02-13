@@ -17,10 +17,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class AvisController extends AbstractController
 {
-   #[Route('/avis/nouveau/{id}', name: 'app_avis_new')]
+
+#[Route('/avis/nouveau/{id}', name: 'app_avis_new')]
 public function nouveau(Covoiturage $covoiturage, Request $request, EntityManagerInterface $em): Response
 {
-    // Sécurité supplémentaire : on vérifie le statut du trajet
+    //on vérifie le statut du trajet
     if (!in_array($covoiturage->getStatut(), ['Terminé', 'Clôturé'])) {
         $this->addFlash('danger', "Vous ne pouvez pas laisser d'avis avant la fin du trajet.");
         return $this->redirectToRoute('app_user');
@@ -40,7 +41,6 @@ public function nouveau(Covoiturage $covoiturage, Request $request, EntityManage
         $em->flush();
 
         $this->addFlash('success', 'Merci ! Votre avis est en cours de modération.');
-        // Redirection vers le profil après l'avis
         return $this->redirectToRoute('app_user');
     }
 

@@ -1,64 +1,61 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-{# 1. SECTION HERO (L'image de fond) #}
-
-    
-    <div class="hero-section text-white text-center">
+{# SECTION HERO #}
+<div class="hero-section text-white text-center">
     <div class="container">
         <h1 class="display-4 fw-bold text-white">Covoiturez pour la planète</h1>
         <p class="lead mb-4">Simple, écologique et économique.</p>
     </div>
 </div>
 
-{# 2. BARRE DE RECHERCHE (Remontée plus haut) #}
+{# BARRE DE RECHERCHE (Remontée plus haut) #}
 <div class="container search-bar-container">
     <div class="card shadow-lg p-4 border-0 rounded-4">
-                
-                {{ form_start(searchForm, {'action': path('app_covoiturage_index'), 'method': 'GET'}) }}
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            {{ form_widget(searchForm.depart)}}
-                        </div>
-                        <div class="col-md-4">
-                            {{ form_widget(searchForm.arrivee)}}
-                        </div>
-                        <div class="col-md-3">
-                            {{ form_widget(searchForm.date) }}
-                        </div>
-                        <div class="col-md-1">
-                            <button type="submit" class="btn btn-success w-100">
-                                <i class="bi bi-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                    {# BOUTON POUR DÉPLIER LES FILTRES #}
-    <div class="text-start mt-3">
-        <button class="btn btn-link text-success p-0 text-decoration-none" type="button" data-bs-toggle="collapse" data-bs-target="#extraFilters">
-            <i class="bi bi-plus-circle"></i> Plus de filtres
-        </button>
-    </div>
+         {{ form_start(searchForm, {'action': path('app_covoiturage_index'), 'method': 'GET'}) }}
+            <div class="row g-3">
+                <div class="col-md-4">
+                {{ form_widget(searchForm.depart)}}
+                </div>
+                <div class="col-md-4">
+                {{ form_widget(searchForm.arrivee)}}
+                </div>
+                <div class="col-md-3">
+                {{ form_widget(searchForm.date) }}
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+{# BOUTON POUR DÉPLIER LES FILTRES #}
+<div class="text-start mt-3">
+    <button class="btn btn-link text-success p-0 text-decoration-none" type="button" data-bs-toggle="collapse" data-bs-target="#extraFilters">
+        <i class="bi bi-plus-circle"></i> Plus de filtres
+    </button>
+</div>
 
-    {# SECTION CACHÉE #}
-    <div class="collapse mt-3" id="extraFilters">
-        <div class="row g-3 border-top pt-3">
-            <div class="col-md-4">
-                {{ form_row(searchForm.prixMax) }}
-            </div>
-            <div class="col-md-4">
-                {{ form_row(searchForm.dureeMax) }}
-            </div>
-            <div class="col-md-4">
-                {{ form_row(searchForm.noteMin) }}
-            </div>
-            <div class="col-12 text-center mt-2">
-                {{ form_widget(searchForm.estEcologique) }}
-                {{ form_label(searchForm.estEcologique) }}
-            </div>
+{# SECTION CACHÉE #}
+<div class="collapse mt-3" id="extraFilters">
+    <div class="row g-3 border-top pt-3">
+        <div class="col-md-4">
+        {{ form_row(searchForm.prixMax) }}
+        </div>
+        <div class="col-md-4">
+        {{ form_row(searchForm.dureeMax) }}
+        </div>
+        <div class="col-md-4">
+        {{ form_row(searchForm.noteMin) }}
+        </div>
+        <div class="col-12 text-center mt-2">
+        {{ form_widget(searchForm.estEcologique) }}
+        {{ form_label(searchForm.estEcologique) }}
         </div>
     </div>
-{{ form_end(searchForm, {'render_rest': false}) }}
-            </div>
+</div>
+    {{ form_end(searchForm, {'render_rest': false}) }}
+        </div>
         </div>
     </section>
 
@@ -74,7 +71,6 @@
                     <div class="text-success"><i class="bi bi-check-circle-fill"></i> Communauté vérifiée</div>
                 </div>
             </div>
-            
         </div>
     </section>
 {% endblock %}

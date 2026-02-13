@@ -22,7 +22,7 @@ final class UserController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        // On filtre les avis pour n'afficher que les validés
+        // filtrage des avis pour n'afficher que les validés
         $avisValides = $user->getAvis()->filter(function($avi) {
             return $avi->getStatut() === 'validé';
         });

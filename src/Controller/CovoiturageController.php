@@ -15,20 +15,22 @@ use App\Service\NosqlStatsService;
 
 final class CovoiturageController extends AbstractController
 {
-  #[Route('/covoiturage', name: 'app_covoiturage')]
+
+//création d'un nouveau trajet
+#[Route('/covoiturage', name: 'app_covoiturage')]
 public function new(Request $request, EntityManagerInterface $em): Response
 {
-    // 1. On récupère le chauffeur connecté
+    // récupèration du chauffeur connecté
     /** @var \App\Entity\User $chauffeur */
     $chauffeur = $this->getUser();
 
-    // 2. Vérification : le chauffeur a-t-il les 2 crédits requis pour publier ?
+    // Vérification : si le chauffeur a bien 2 euros pour publier un trajet 
     if (!$chauffeur || $chauffeur->getCredit() < 2) {
         $this->addFlash('danger', 'Crédits insuffisants : il vous faut 2 crédits pour publier un voyage.');
         return $this->redirectToRoute('app_user');
     }
 
-    // Sécurité véhicule (US 9 : Un véhicule doit être sélectionné)
+    // Un véhicule doit être sélectionné pour le trajet
     if ($chauffeur->getVoitures()->isEmpty()) {
         $this->addFlash('danger', 'Vous devez d\'abord enregistrer une voiture.');
         return $this->redirectToRoute('app_user');
@@ -49,7 +51,7 @@ public function new(Request $request, EntityManagerInterface $em): Response
             $covoiturage->setNbPlace($voiture->getNbPlaces());
         }
 
-        // --- LOGIQUE US 9 : Déduction des 2 crédits du compte CHAUFFEUR ---
+        // Déduction des 2 crédits du compte CHAUFFEUR 
         $nouveauSolde = $chauffeur->getCredit() - 2;
         $chauffeur->setCredit($nouveauSolde);
 
@@ -65,7 +67,7 @@ public function new(Request $request, EntityManagerInterface $em): Response
         }
 
         $em->persist($covoiturage);
-        // On persiste aussi les modifications sur le chauffeur (le crédit)
+        // persiste aussi les modifications sur le chauffeur (le crédit)
         $em->persist($chauffeur); 
         
         $em->flush();
@@ -80,8 +82,8 @@ public function new(Request $request, EntityManagerInterface $em): Response
 }
 
     
-    
-   #[Route('/covoiturages', name: 'app_covoiturage_index')]
+//liste des covoiturages publiés   
+#[Route('/covoiturages', name: 'app_covoiturage_index')]
 public function index(CovoiturageRepository $repository, Request $request): Response
 {
     $form = $this->createForm(SearchTrajetType::class);
@@ -90,7 +92,7 @@ public function index(CovoiturageRepository $repository, Request $request): Resp
     $form->handleRequest($request);
     $searchArray = $request->query->all('search_trajet');
 
-    // On nettoie les données pour éviter les chaînes vides ""
+    // On nettoie les données pour éviter les chaînes vides
     $depart = !empty($searchArray['depart']) ? $searchArray['depart'] : null;
     $arrivee = !empty($searchArray['arrivee']) ? $searchArray['arrivee'] : null;
     $date = !empty($searchArray['date']) ? $searchArray['date'] : null;
@@ -99,6 +101,9 @@ public function index(CovoiturageRepository $repository, Request $request): Resp
     $noteMin = (isset($searchArray['noteMin']) && $searchArray['noteMin'] !== '') ? (int)$searchArray['noteMin'] : null;
     $estEcologique = isset($searchArray['estEcologique']);
 
+    // On nettoie les données et on utilise trim() pour supprimer les espaces
+    $depart = !empty($searchArray['depart']) ? trim($searchArray['depart']) : null;
+    $arrivee = !empty($searchArray['arrivee']) ? trim($searchArray['arrivee']) : null;
     // Si on a au moins UN filtre, on utilise findByFilters
     if ($depart || $arrivee || $date || $prixMax || $dureeMax || $noteMin || $estEcologique) {
         $trajets = $repository->findByFilters($depart, $arrivee, $date, $prixMax, $dureeMax, $noteMin, $estEcologique);
@@ -115,8 +120,9 @@ public function index(CovoiturageRepository $repository, Request $request): Resp
     
     }
 
-    #[Route('/covoiturage/{id}', name: 'app_covoiturage_show', methods: ['GET'])]
-    public function show(Covoiturage $covoiturage): Response
+// affichage du trajet selectionné
+#[Route('/covoiturage/{id}', name: 'app_covoiturage_show', methods: ['GET'])]
+public function show(Covoiturage $covoiturage): Response
     {
     
     return $this->render('covoiturage/show.html.twig', [
@@ -125,39 +131,39 @@ public function index(CovoiturageRepository $repository, Request $request): Resp
     
     }
 
-
-    #[Route('/covoiturage/reserver/{id}', name: 'app_covoiturage_reserve')]
-    public function reserve(Covoiturage $covoiturage, EntityManagerInterface $em, NosqlStatsService $nosqlStats): Response
+// reservation covoiturage
+#[Route('/covoiturage/reserver/{id}', name: 'app_covoiturage_reserve')]
+public function reserve(Covoiturage $covoiturage, EntityManagerInterface $em, NosqlStatsService $nosqlStats): Response
     {
         $user = $this->getUser(); // Le passager connecté
 
-        // 1. Vérifier si l'utilisateur est connecté
+        // Vérif si l'utilisateur est connecté
         if (!$user) {
             $this->addFlash('danger', 'Vous devez être connecté pour réserver.');
             return $this->redirectToRoute('app_login');
         }
 
-        // 2. Sécurité : Empêcher le chauffeur de réserver son propre trajet
+        // Sécurité : Empêcher le chauffeur de réserver son propre trajet
         $chauffeur = $covoiturage->getVoiture()->getUser();
         if ($user === $chauffeur) {
             $this->addFlash('warning', 'Vous ne pouvez pas réserver votre propre trajet.');
             return $this->redirectToRoute('app_covoiturage_show', ['id' => $covoiturage->getId()]);
         }
 
-        // 3. Vérifier s'il reste des places
+        // Vérif s'il reste des places
         if ($covoiturage->getNbPlace() <= 0) {
             $this->addFlash('danger', 'Désolé, ce trajet est complet.');
             return $this->redirectToRoute('app_covoiturage_show', ['id' => $covoiturage->getId()]);
         }
 
-        // 4. Vérifier si l'utilisateur n'est pas déjà inscrit
+        // Vérif si l'utilisateur n'est pas déjà inscrit
         if ($covoiturage->getUsers()->contains($user)) {
             $this->addFlash('warning', 'Vous êtes déjà inscrit à ce trajet.');
             return $this->redirectToRoute('app_covoiturage_show', ['id' => $covoiturage->getId()]);
         }
 
-        // 5. LOGIQUE DE TRANSACTION (Crédits)
-        // Vérifier si le passager a assez de crédits
+        
+        // Vérif si le passager a assez de crédits
         if ($user->getCredit() < $covoiturage->getPrixPersonne()) {
             $this->addFlash('danger', 'Crédits insuffisants pour cette réservation.');
             return $this->redirectToRoute('app_covoiturage_show', ['id' => $covoiturage->getId()]);
@@ -167,11 +173,11 @@ public function index(CovoiturageRepository $repository, Request $request): Resp
         $user->setCredit($user->getCredit() - $covoiturage->getPrixPersonne());
         $chauffeur->setCredit($chauffeur->getCredit() + $covoiturage->getPrixPersonne());
 
-        // 6. Procéder à la réservation technique
+        // Procéder à la réservation technique
         $covoiturage->addUser($user);
         $covoiturage->setNbPlace($covoiturage->getNbPlace() - 1); // Décrémenter les places
 
-        // 7. Si le nombre de place tombe à 0, on change le statut
+        // Si le nombre de place tombe à 0, on change le statut
         if ($covoiturage->getNbPlace()===0){
             $covoiturage->setStatut('Complet');
         }
@@ -183,7 +189,9 @@ public function index(CovoiturageRepository $repository, Request $request): Resp
         return $this->redirectToRoute('app_user');
     }
 
-    #[Route('/covoiturage/annuler/{id}', name: 'app_covoiturage_annuler', methods: ['POST'])]
+
+//annulation de covoiturage
+#[Route('/covoiturage/annuler/{id}', name: 'app_covoiturage_annuler', methods: ['POST'])]
 public function annuler(Covoiturage $trajet, EntityManagerInterface $em): Response
 {
     $user = $this->getUser();
@@ -209,6 +217,8 @@ public function annuler(Covoiturage $trajet, EntityManagerInterface $em): Respon
     return $this->redirectToRoute('app_user');
 }
 
+
+//changement de statut covoiturage
 #[Route('/covoiturage/statut/{id}/{action}', name: 'app_covoiturage_statut')]
 public function changeStatut(Covoiturage $trajet, string $action, EntityManagerInterface $em): Response
 {
@@ -227,40 +237,40 @@ public function changeStatut(Covoiturage $trajet, string $action, EntityManagerI
     
     elseif ($action === 'terminer' && $trajet->getStatut() === 'En cours') {
         $trajet->setStatut('Terminé');
-        
-        // US 11 : Envoyer un mail aux passagers ici
         foreach ($trajet->getUsers() as $passager) {
-            // Logique Mailer : "Merci de valider le trajet sur votre espace"
+            
         }
-        
-        $this->addFlash('success', 'Trajet terminé ! Les passagers ont été invités à valider le voyage.');
+       $this->addFlash('success', 'Trajet terminé ! Les passagers ont été invités à valider le voyage.');
     }
 
     $em->flush();
     return $this->redirectToRoute('app_user');
 }
 
+
+//validation trajet
 #[Route('/trajet/valider/{id}/{reussite}', name: 'app_trajet_valider')]
 public function validerTrajet(Covoiturage $trajet, string $reussite, EntityManagerInterface $em): Response
 {
     $chauffeur = $trajet->getVoiture()->getUser();
     
     if ($reussite === 'oui') {
-        // US 11 & 12 : Mise à jour des crédits du chauffeur
+        // Mise à jour des crédits du chauffeur
         // On ajoute le prix du trajet au crédit du chauffeur
         $chauffeur->setCredit($chauffeur->getCredit() + $trajet->getPrixPersonne());
         
         $trajet->setStatut('Clôturé');
         $this->addFlash('success', 'Merci ! Le chauffeur a bien reçu ses crédits.');
-    } else {
+ //   } else {
         // Si le passager indique un problème
-        $this->addFlash('danger', 'Un employé va examiner la situation avant de débloquer les crédits du chauffeur.');
+        // $this->addFlash('danger', 'Un employé va examiner la situation avant de débloquer les crédits du chauffeur.');
         // Ici, on pourrait envoyer un mail à l'admin ou changer le statut en 'Litige'
-        $trajet->setStatut('Litige');
-    }
+     //   $trajet->setStatut('Litige');
+   // }
 
     $em->flush();
     return $this->redirectToRoute('app_user');
 }
 
+}
 }

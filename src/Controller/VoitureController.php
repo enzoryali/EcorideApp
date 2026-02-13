@@ -43,4 +43,27 @@ class VoitureController extends AbstractController
             'editMode' => $voiture->getId() !== null
         ]);
     }
+
+
+    #[Route('/user/voiture/supprimer/{id}', name: 'app_voiture_delete', methods: ['POST'])]
+    public function delete(Voiture $voiture, Request $request, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+
+        // Sécurité 1 : On vérifie que la voiture appartient bien à l'utilisateur connecté
+        if ($voiture->getUser() !== $user) {
+            throw $this->createAccessDeniedException("Vous n'avez pas le droit de supprimer ce véhicule.");
+        }
+
+        // Sécurité 2 : Vérification du jeton CSRF (nommé 'delete' + l'id de la voiture)
+        if ($this->isCsrfTokenValid('delete' . $voiture->getId(), $request->request->get('_token'))) {
+            $em->remove($voiture);
+            $em->flush();
+            $this->addFlash('success', 'Véhicule supprimé avec succès.');
+        } else {
+            $this->addFlash('danger', 'Jeton de sécurité invalide.');
+        }
+
+        return $this->redirectToRoute('app_user');
+    }
 }

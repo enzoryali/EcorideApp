@@ -19,23 +19,23 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class AdminController extends AbstractController
 {
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin', name: 'app_admin')]
-public function index(
+    public function index(
     UserRepository $userRepo, 
     CovoiturageRepository $trajetRepo, 
     NosqlStatsService $nosqlStats
-): Response {
-    // 1. Total des crédits gagnés par la plateforme (Ex: commission de 2€ par trajet)
-    // Ici, on fait une estimation simple, à adapter selon votre logique métier
+    ): Response {
+    // 1. Total des crédits gagnés par la plateforme 
     $totalTrajetsTermines = $trajetRepo->count(['statut' => 'Terminé']);
     $totalCreditsPlateforme = $totalTrajetsTermines * 2; 
 
-    // 2. Données pour les graphiques (Exemple sur les 7 derniers jours)
-    $statsGraph = [
-        'labels' => ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
-        'trajets' => [5, 8, 12, 7, 15, 20, 10], // À remplacer par une requête GROUP BY date
-        'credits' => [10, 16, 24, 14, 30, 40, 20], // Nombre trajets * commission
-    ];
+        // 2. Données pour les graphiques (Exemple sur les 7 derniers jours)
+        $statsGraph = [
+            'labels' => ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+            'trajets' => [5, 8, 12, 7, 15, 20, 10], // exemple à remplacer par une méthode pour compter les trajets par date
+            'credits' => [10, 16, 24, 14, 30, 40, 20], // Nombre trajets * commission(exemple)
+        ];
 
     return $this->render('admin/admin.html.twig', [
         'countUsers' => $userRepo->count([]),

@@ -74,10 +74,10 @@
     </div>
 </div>
 
-{# 1. Charger la librairie en premier #}
+{# 1. Charger la librairie cdn #}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-{# 2. Transférer les données Twig vers le monde JavaScript #}
+{# 2. Transférer les données #}
 <script>
     window.statsData = {
         labels: {{ statsGraph.labels|json_encode|raw }},

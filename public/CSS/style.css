@@ -9,7 +9,7 @@
 .hero-section {
     height: 350px;
     background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), 
-                url('../images/background.jpeg') no-repeat center center; 
+                url('../images/background.jpeg') no-repeat center center; /*réalisé à l'aide de l'IA*/
     background-size: cover; 
     width: 100vw;
     position: relative;
@@ -39,27 +39,27 @@
 
 /* Conteneur de l'alerte crédit */
 .credit-badge {
-    background-color: #d1ecf1; /* Équivalent à alert-info */
+    background-color: #d1ecf1;      /* Équivalent à alert-info */
     color: #0c5460;
-    padding-top: 0.5rem;    /* Équivalent à py-2 */
+    padding-top: 0.5rem;              /* Équivalent à py-2 */
     padding-bottom: 0.5rem;
-    border: 0 !important;   /* Équivalent à border-0 */
+    border: 0 !important;             /* Équivalent à border-0 */
     border-radius: 0.5rem;
 }
 
 /* Le petit texte "CRÉDITS" */
 .credit-label {
-    display: block;         /* Équivalent à d-block */
+    display: block;            /* Équivalent à d-block */
     text-transform: uppercase; /* Équivalent à text-uppercase */
-    font-weight: bold;      /* Équivalent à fw-bold */
-    font-size: 0.7rem;      /* Ton style personnalisé */
+    font-weight: bold;         /* Équivalent à fw-bold */
+    font-size: 0.7rem;         /* Ton style personnalisé */
     letter-spacing: 0.5px;
 }
 
 .section-label-small {
     display: block;
     font-weight: bold;         /* fw-bold */
-    color: #6c757d;            /* text-muted */
+    color: #6c757d;          /* text-muted */
     text-transform: uppercase; /* text-uppercase */
     font-size: 0.7rem;         /* Ton style personnalisé */
     letter-spacing: 0.5px;     /* Petit bonus pour la lisibilité en majuscules */
@@ -111,5 +111,10 @@
     display: block;
     text-transform: uppercase;
     font-size: 0.75rem;
+}
+
+.list-group-item form {
+    display: inline-block !important;
+    margin: 0 !important;
 }
 

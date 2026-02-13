@@ -68,7 +68,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                {# C'est ICI que l'on met le lien vers ton controller #}
                 <a href="{{ path('app_covoiturage_reserve', {'id': covoiturage.id}) }}" class="btn btn-success px-4">
                     Confirmer et utiliser mes crédits
                 </a>
@@ -115,28 +114,27 @@
     </div>
 </div>
 
-                    {# --- AVIS DU CONDUCTEUR --- #}
-                    <div class="mt-5">
-                        <h4 class="h5 border-bottom pb-2">Derniers avis sur {{ covoiturage.voiture.user.pseudo }}</h4>
-                        {% for avis in covoiturage.voiture.user.avis %}
-                            <div class="mb-3 p-3 bg-light rounded shadow-sm">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="fw-bold text-warning">
-                                        {% for i in 1..5 %}
-                                            <i class="bi bi-star{{ i <= avis.note ? '-fill' : '' }}"></i>
-                                        {% endfor %}
-                                    </span>
-                                    
-                                </div>
-                                <p class="mb-0 mt-2 italic">"{{ avis.commentaire }}"</p>
-                            </div>
-                        {% else %}
-                            <p class="text-muted small">Aucun avis n'a été laissé pour ce conducteur.</p>
-                        {% endfor %}
+        {# --- AVIS DU CONDUCTEUR --- #}
+        <div class="mt-5">
+            <h4 class="h5 border-bottom pb-2">Derniers avis sur {{ covoiturage.voiture.user.pseudo }}</h4>
+        {% for avis in covoiturage.voiture.user.avis %}
+                <div class="mb-3 p-3 bg-light rounded shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-warning">
+                            {% for i in 1..5 %}
+                                <i class="bi bi-star{{ i <= avis.note ? '-fill' : '' }}"></i>
+                            {% endfor %}
+                        </span>
+                    </div>
+                        <p class="mb-0 mt-2 italic">"{{ avis.commentaire }}"</p>
+                </div>
+        {% else %}
+            <p class="text-muted small">Aucun avis n'a été laissé pour ce conducteur.</p>
+        {% endfor %}
                     </div>
                 </div>
-            </div>
         </div>
+    </div>
 
         
 {% endblock %}

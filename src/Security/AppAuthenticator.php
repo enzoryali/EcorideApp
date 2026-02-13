@@ -47,14 +47,21 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
-      
-{
-    // Redirige vers espace
-    
-    return new RedirectResponse($this->urlGenerator->generate('app_user'));
-}
+
+        $user = $token->getUser();
+        $roles = $user->getRoles();
+
+        // Redirection logique : Admin -> Dashboard, sinon -> Espace User
+        if (in_array('ROLE_ADMIN', $roles)) {
+            return new RedirectResponse($this->urlGenerator->generate('app_admin'));
+        }
+
+        return new RedirectResponse($this->urlGenerator->generate('app_user'));
     }
 
+    /**
+     * Cette méthode manquante causait l'erreur 500
+     */
     protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
