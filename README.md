@@ -25,3 +25,6 @@ EcoRide est une application web complète développée avec **Symfony 7** dans l
    ```bash
    git clone [https://github.com/enzoryali/EcorideApp.git](https://github.com/enzoryali/EcorideApp.git)
    cd EcorideApp
+2. **Installer les dépendances PHP (Composer) :**
+   ```bash
+   composer install
