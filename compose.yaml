@@ -1,25 +1,30 @@
-
 services:
-###> doctrine/doctrine-bundle ###
   database:
-    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    image: mysql:8.0
+    container_name: ecoride_db
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
-    healthcheck:
-      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
-      timeout: 5s
-      retries: 5
-      start_period: 60s
-    volumes:
-      - database_data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: ecoride_db
+    ports:
+      - "3307:3306"
 
-volumes:
-###> doctrine/doctrine-bundle ###
-  database_data:
-###< doctrine/doctrine-bundle ###
+  php:
+    build: .
+    container_name: ecoride_app
+    ports:
+      - "8005:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - database
+    environment:
+      DATABASE_URL: "mysql://root:@database:3306/ecoride_db?serverVersion=8.0&charset=utf8mb4"
+
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.1
+    container_name: ecoride_pma
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: database
