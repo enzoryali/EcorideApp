@@ -33,7 +33,7 @@ graph TD
     
     %% Admin
     Admin --> UC7
-    Admin --> UC8
+    Admin --> UC8```
 
 ## Diagramme de Séquence : Réservation d'un trajet (US 6)
 
