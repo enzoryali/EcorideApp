@@ -37,7 +37,6 @@ graph TD
 
 ## Diagramme de Séquence : Réservation d'un trajet (US 6)
 
-```mermaid
 sequenceDiagram
     autonumber
     actor U as Utilisateur
