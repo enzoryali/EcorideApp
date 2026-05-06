@@ -34,3 +34,36 @@ graph TD
     %% Admin
     Admin --> UC7
     Admin --> UC8
+
+## Diagramme de Séquence : Réservation d'un trajet (US 6)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as Utilisateur
+    participant F as Front-end (Twig)
+    participant C as Contrôleur (Symfony)
+    participant B as Base de données (MySQL)
+
+    U->>F: Clique sur "Participer"
+    F->>C: Requête POST /reservation/{id}
+    
+    C->>B: Vérifier places disponibles & crédits
+    B-->>C: Données renvoyées
+    
+    alt Pas assez de crédits ou places
+        C-->>F: Message d'erreur
+        F-->>U: Affiche "Crédits insuffisants"
+    else Validation possible
+        C-->>F: Demande double confirmation (US 6)
+        U->>F: Confirme la réservation
+        F->>C: Validation finale
+        
+        C->>B: Débiter crédits passager
+        C->>B: Diminuer places covoiturage
+        C->>B: Enregistrer la réservation
+        B-->>C: Succès
+        
+        C-->>F: Redirection vers l'espace passager
+        F-->>U: Affiche "Réservation confirmée"
+    end
