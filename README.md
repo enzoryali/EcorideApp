@@ -35,8 +35,6 @@ graph TD
     Admin --> UC7
     Admin --> UC8```
 
-## Diagramme de Séquence : Réservation d'un trajet (US 6)
-
 sequenceDiagram
     autonumber
     actor U as Utilisateur
@@ -46,23 +44,12 @@ sequenceDiagram
 
     U->>F: Clique sur "Participer"
     F->>C: Requête POST /reservation/{id}
-    
-    C->>B: Vérifier places disponibles & crédits
-    B-->>C: Données renvoyées
-    
-    alt Pas assez de crédits ou places
-        C-->>F: Message d'erreur
-        F-->>U: Affiche "Crédits insuffisants"
-    else Validation possible
-        C-->>F: Demande double confirmation (US 6)
-        U->>F: Confirme la réservation
-        F->>C: Validation finale
-        
-        C->>B: Débiter crédits passager
-        C->>B: Diminuer places covoiturage
-        C->>B: Enregistrer la réservation
-        B-->>C: Succès
-        
-        C-->>F: Redirection vers l'espace passager
-        F-->>U: Affiche "Réservation confirmée"
-    end
+    C->>B: Vérifier places & crédits
+    B-->>C: OK
+    C-->>F: Demande double confirmation
+    U->>F: Confirme
+    F->>C: Validation finale
+    C->>B: Débiter crédits & MAJ places
+    B-->>C: Succès
+    C-->>F: Redirection
+    F-->>U: Affiche "Confirmé"
